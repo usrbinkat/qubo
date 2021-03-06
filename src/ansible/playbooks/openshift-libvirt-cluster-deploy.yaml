@@ -1,9 +1,6 @@
 # Run sample
-
 # cd to ansible directory
-
 # sudo ansible-playbook playbooks/openshift-libvirt-cluster-deploy.yaml -i `pwd`/vars/libvirt/inventory -e config=`pwd`/vars/libvirt/main.yaml
-
 #### Options
 # --skip-tags pre-deploy
 # --tags openshift-install-time-operations,openshift-auth-provider
@@ -175,6 +172,3 @@
 #     - openshift-create-bridge
 #   tags:
 #     - openshift-create-bridge
-
-
-

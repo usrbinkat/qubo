@@ -1,0 +1,5 @@
+---
+- name: "{{ konductor.plugin }} | selinux:state | Set SELinux {{ qubo.selinux }}"
+  selinux:
+    policy: "targeted"
+    state: "{{ qubo.selinux }}"

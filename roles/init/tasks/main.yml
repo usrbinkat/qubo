@@ -1,0 +1,9 @@
+---
+- name: "{{ konductor.plugin }} | Install Host Dependencies"
+  include_tasks: packages_{{ ansible_os_family }}{{ ansible_distribution_major_version }}.yml
+- name: "{{ konductor.plugin }} | Configure SELinux"
+  include_tasks: selinux.yml
+- name: "{{ konductor.plugin }} | Configure Libvirtd"
+  include_tasks: libvirt.yml
+- name: "{{ konductor.plugin }} | Configure Grub Kernel Boot Arguments"
+  include_tasks: grub.yml

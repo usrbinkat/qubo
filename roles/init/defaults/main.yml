@@ -1,0 +1,71 @@
+---
+qubo:
+  selinux: "permissive"
+  listen_ipv4: "{{ qubo_ip | default(ansible_default_ipv4.address) }}"
+konductor:
+  date: "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.hour }}"
+  plugin: 'Qubo O^3 Installer | {{ ansible_distribution }} {{ ansible_distribution_version }} | github.com/ContainerCraft/qubo'
+dir:
+  usr: '/root'
+  tmp: '/tmp/koffer'
+  iac: '/root/platform/iac'
+  bin: '/root/platform/bin'
+  meta: '/root/platform/meta'
+  seed: '/root/cloudctl/seed'
+  nginx: '/root/platform/nginx'
+  koffer: '/root/koffer'
+  bundle: '/root/bundle'
+  mirror: '/root/platform/mirror'
+  images: '/root/platform/images'
+  config: '/root/cloudctl/config'
+  secrets: '/root/platform/secrets'
+  registry: '/root/platform/mirror/docker'
+  platform: '/root/platform'
+  cloudctl: '/root/cloudctl'
+cloudctl:
+  ssh:
+    enable: "{{ lookup('env', 'ENABLE_SSH') | default('true', true) }}"
+    priv_key_file: "{{ dir.user }}/.ssh/id_rsa"
+    pub_key_file: "{{  dir.user }}/.ssh/id_rsa.pub"
+    priv_key_str: "{{  lookup('file', '{{ cloudctl.ssh.priv_key_file }}') }}"
+    pub_key_str: "{{   lookup('file', '{{ cloudctl.ssh.pub_key_file }}')  }}"
+  domain:
+    sub: "{{  lookup('env', 'SUB_DOMAIN')   | default('o3',       true) }}"
+    base: "{{ lookup('env', 'BASE_DOMAIN')  | default('codectl.io', true) }}"
+  pod:
+    name: "{{ lookup('env', 'POD_NAME') | default('cloudctl', true) }}"
+    force_replace: true
+git:
+  - name: cloudctl
+    repo: 'https://github.com/CloudCtl/cloudctl.git'
+    dest: '{{ dir.cloudctl }}'
+    ref: "{{ lookup('env', 'TPDK_VERSION') | default('master', true)  }}"
+  - name: qubo
+    repo: 'https://github.com/ContainerCraft/qubo.git'
+    dest: '{{ dir.iac }}/qubo'
+    ref: "{{ lookup('env', 'O3_VERSION') | default('master', true)  }}"
+
+packages_RedHat8:
+  - tar
+  - unzip
+  - libvirt
+  - qemu-kvm
+  - qemu-img
+  - virt-top
+  - genisoimage
+  - libvirt-nss
+  - virt-install
+  - libvirt-client
+  - python3-libvirt
+  - libguestfs-tools
+  - libguestfs-tools
+  - policycoreutils-python-utils
+
+grub:
+  RedHat8:
+  - iommu=pt
+  - pci=noaer
+  - intel_iommu=on
+  - kvm_intel.nested=1
+
+reboot: "true"

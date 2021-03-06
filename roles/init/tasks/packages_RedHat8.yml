@@ -1,0 +1,7 @@
+---
+- name: "{{ konductor.plugin }} | package:present | Install host libvirt dependencies"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ packages_RedHat8 }}"

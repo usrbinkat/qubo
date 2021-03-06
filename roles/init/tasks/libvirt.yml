@@ -1,0 +1,7 @@
+---
+- name: "{{ konductor.plugin }} | service:started | Enable & Start Libvirt Daemon"
+  become: yes
+  service:
+    name: libvirtd
+    state: started
+    enabled: yes

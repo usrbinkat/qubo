@@ -1,0 +1,23 @@
+all:
+  vars:
+    konductor:
+      plugin: "Qubo O^3 Installer"
+  children:
+    clients:
+      hosts:
+        qubo:
+          ansible_user: root
+          ansible_connection: ssh
+          ansible_host: "{{ qubo_ip | default('10.88.0.1') }}"
+          ansible_port: 22
+        cloudctl:
+          ansible_connection: ssh
+          ansible_host: "10.88.0.1"
+          ansible_user: root
+          ansible_port: 22
+        koffer:
+          ansible_user: root
+          ansible_connection: local
+        konductor:
+          ansible_user: root
+          ansible_connection: local
