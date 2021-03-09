@@ -5,5 +5,5 @@
 - name: "Qubo | O^3 Host Install"
   hosts: qubo
   roles:
-    - role: init
-      tags: init
+    - role: hypervisor
+      tags: hypervisor
