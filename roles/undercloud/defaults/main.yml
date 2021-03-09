@@ -1,5 +1,8 @@
 ---
-tenant_iface: "null"
+iface_default: "{{     iface                   | default('null') }}"
+tenant_iface: "{{      lookup('env', 'IFACE')  | default(iface_default) }}"
+reboot_default: "{{    reboot                  | default('true',   true) | bool }}"
+reboot_hypervisor: "{{ lookup('env', 'REBOOT') | default(reboot_default) | bool }}"
 qubo:
   ocs: "{{         qubo_ocs    | default('enabled') }}"
   bridge: "{{      qubo_bridge | default('qubo-br0') }}"
@@ -59,7 +62,7 @@ dir:
   bundle: '/root/bundle'
   mirror: '/root/platform/mirror'
   images: '/root/platform/images'
-  config: '/root/cloudctl/config'
+  config: '/root/platform/cluster/config'
   secrets: '/root/platform/secrets'
   registry: '/root/platform/mirror/docker'
   platform: '/root/platform'

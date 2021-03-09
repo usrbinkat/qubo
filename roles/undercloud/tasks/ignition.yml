@@ -1,40 +1,23 @@
 ---
-- name: '{{ konductor.plugin }} | Purge OpenShift Manifest Staging Area'
-  file:
-    state: absent
-    path: "{{ item }}"
-  with_items:
-    - '{{ dir.aux }}'
-    - '{{ dir.ignition }}'
-    - '{{ dir.manifests }}'
-
-- name: '{{ konductor.plugin }} | Create OpenShift Manifest Staging Directory'
-  file:
-    state: directory
-    path: "{{ item }}"
-    mode: '0644'
-  with_items:
-    - '{{ dir.aux }}'
-    - '{{ dir.config }}'
-    - '{{ dir.ignition }}'
-    - '{{ dir.manifests }}'
+- name: '{{ konductor.plugin }} | Build OpenShift install-config.yml'
+  import_role: sparta.collector.dependencies
 
 - name: '{{ konductor.plugin }} | Build OpenShift install-config.yml'
   template: 
-    src: install-config.yaml
+    src: libvirt-install-config.yaml.j2
     dest: "{{ dir.install_config }}/undercloud-{{ item }}"
   with_items:
-    - "{{ ocp_install_dir }}"
-    - "{{ staging_dir }}"
+    - "{{ dir.install_config }}"
+    - "{{ dir.manifests }}"
 
 - name: Create OCP manifests
   shell:
-    chdir: "{{ staging_dir }}"
-    cmd: "{{ staging_dir }}/openshift-install create manifests --dir {{ ocp_install_dir }}"
+    chdir: "{{ dir.manifests }}"
+    cmd: "{{ dir.manifests }}/openshift-install create manifests --dir {{ dir.manifests }}"
 
 # Separate partition for ETCD for better performance
-- name: Process machine config for disk partitioning
-  template: 
-    src: 98-etcd-partition.yaml
-    dest: "{{ ocp_install_dir }}/manifests"
-  when: platform == "O^3"
+# name: Process machine config for disk partitioning
+# template: 
+#   src: 98-etcd-partition.yaml
+#   dest: "{{ ocp_install_dir }}/manifests"
+# when: platform == "O^3"

@@ -1,0 +1,5 @@
+---
+- name: "{{ konductor.plugin }} | Build OpenShift install-config.yml"
+  import_role:
+    name: sparta.collector.dependencies
+
