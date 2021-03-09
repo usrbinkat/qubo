@@ -35,7 +35,7 @@ ssh -p 2222 root@10.88.0.1
 ```
 ### 0. Install & Configure Libvirt Hypervisor Layer
 ```sh
-./hypervisor -e reboot=true -e tenant_iface=eno2np1
+./hypervisor -e reboot=true -e iface=eno2np1
 ```
 ### 0. 
 ```sh
