@@ -1,0 +1,146 @@
+---
+tenant_iface: "null"
+qubo:
+  ocs: "{{         qubo_ocs    | default('enabled') }}"
+  bridge: "{{      qubo_bridge | default('qubo-br0') }}"
+  listen_ipv4: "{{ qubo_ip     | default(ansible_default_ipv4.address) }}"
+  domain:
+    sub: "{{  lookup('env', 'SUB_DOMAIN')   | default('o3',       true) }}"
+    base: "{{ lookup('env', 'BASE_DOMAIN')  | default('codectl.io', true) }}"
+    fqdn: "{{ qubo.domain.sub }}.{{ qubo.domain.base }}"
+  openshift:
+    release: "{{ ocp_release | default('latest') }}"
+cloudctl:
+  docker:
+    pull_secret_file: "{{ dir.user }}/.docker/config"
+    pull_secret_str: "{{   lookup('file', '{{ cloudctl.docker.pull_secret_file }}')  }}"
+  ssh:
+    enable: "{{ lookup('env', 'ENABLE_SSH') | default('true', true) }}"
+    priv_key_file: "{{ dir.user }}/.ssh/id_rsa"
+    pub_key_file: "{{  dir.user }}/.ssh/id_rsa.pub"
+    priv_key_str: "{{  lookup('file', '{{ cloudctl.ssh.priv_key_file }}') }}"
+    pub_key_str: "{{   lookup('file', '{{ cloudctl.ssh.pub_key_file }}')  }}"
+  pod:
+    name: "{{ lookup('env', 'POD_NAME') | default('cloudctl', true) }}"
+    force_replace: true
+undercloud:
+  platform:
+    provider: "libvirt"
+  master:
+    count: "3"
+    ignition: ""
+    disk: "{{ 256 }}"
+    ram: "16384"
+    cpu: "4"
+  worker:
+    count: "3"
+    ignition: ""
+    disk: "{{ 256 }}"
+    ram: "16384"
+    cpu: "12"
+  ocs:
+    count: "3"
+    ignition: ""
+    disk: "{{ 256 }}"
+    ram: "65536"
+    cpu: "8"
+konductor:
+  date: "{{ ansible_date_time.year }}{{ ansible_date_time.month }}{{ ansible_date_time.day }}{{ ansible_date_time.hour }}"
+  plugin: 'Qubo O^3 Installer | {{ ansible_distribution }} {{ ansible_distribution_version }} | github.com/ContainerCraft/qubo'
+dir:
+  usr: '/root'
+  tmp: '/tmp/qubo'
+  iac: '/root/platform/iac'
+  bin: '/root/platform/bin'
+  meta: '/root/platform/meta'
+  seed: '/root/cloudctl/seed'
+  nginx: '/root/platform/nginx'
+  koffer: '/root/koffer'
+  bundle: '/root/bundle'
+  mirror: '/root/platform/mirror'
+  images: '/root/platform/images'
+  config: '/root/cloudctl/config'
+  secrets: '/root/platform/secrets'
+  registry: '/root/platform/mirror/docker'
+  platform: '/root/platform'
+  cloudctl: '/root/cloudctl'
+  ignition: '/root/platform/cluster/ignition'
+  overcloud: '/root/platform/nginx/overcloud'
+  manifests: '/root/platform/cluster/manifests'
+  undercloud: '/root/platform/nginx/undercloud'
+  install_config: '/root/platform/cluster/config'
+  kubeconfig: '/root/.kube'
+git:
+  - name: cloudctl
+    repo: 'https://github.com/CloudCtl/cloudctl.git'
+    dest: '{{ dir.cloudctl }}'
+    ref: "{{ lookup('env', 'TPDK_VERSION') | default('master', true)  }}"
+  - name: qubo
+    repo: 'https://github.com/ContainerCraft/qubo.git'
+    dest: '{{ dir.iac }}/qubo'
+    ref: "{{ lookup('env', 'O3_VERSION') | default('master', true)  }}"
+
+# defaults file for undercloud
+### DO NOT ALTER THE VALUES IN THIS SECTION ################################################
+# OCP installer and client download URls.
+#ocp_bin_base_url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp"
+#ocp_bin_release_url: "{{ ocp_bin_base_url }}/{{ ocp_bin_channel }}-{{ ocp_bin_version }}"
+#ocp_bin_client_archive_name: "openshift-client-linux.tar.gz"
+#ocp_bin_installer_archive_name: "openshift-install-linux.tar.gz"
+#ocp_bin_client_url: "{{ ocp_bin_release_url }}/{{ ocp_bin_client_archive_name }}"
+#ocp_bin_installer_url: "{{ ocp_bin_release_url }}/{{ ocp_bin_installer_archive_name }}"
+# RHCOS images base URLs.
+#rhcos_bin_version: "latest"
+#rhcos_bin_base_url: "https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos"
+#rhcos_bin_release_url: "{{ rhcos_bin_base_url }}/{{ ocp_bin_version }}/{{ rhcos_bin_version }}"
+## RHCOS image to be used for OpenShift Virtualization
+#kubevirt_rhcos_bin_archive_name: "rhcos-openstack.x86_64.qcow2.gz"
+#kubevirt_rhcos_bin_file_name: "rhcos-openstack.x86_64.qcow2"
+## RHCOS image to be used for KVM 
+#libvirt_rhcos_bin_archive_name: "rhcos-qemu.x86_64.qcow2.gz"
+#libvirt_rhcos_bin_file_name: "rhcos-qemu.x86_64.qcow2"
+# OCP install directory
+#ocp_install_dir: "{{ staging_dir }}/ocp-install"
+### bootstrap VM vars
+#bootstrap_ign: "{{ ocp_install_dir }}/bootstrap-pointer.ign"
+#bootstrap_type: "bootstrap"
+
+############################################################################################
+#http_file_server_base_path: "/var/www/html" # Change this to the base path of your webserver"
+#http_file_server_path: "{{ http_file_server_base_path }}/{{ ocp_cluster_name }}"
+# Change this to the base url of your webserver, make sure you don't have a / at the end
+#http_base_url: "http://t640.arvhomelab.com:8080"
+
+## pull secret for the cluster
+#pull_secret: '{"auths":{"cloud.openshift.com":{"auth":"b3BlbnNoaWZ0LXJ...}}}'
+#ocp_cluster_name: "ocp-infra1"
+#cluster_kubeconfig: "{{ kubeconfig_dir }}/{{ ocp_cluster_name }}"
+#staging_dir: "{{ staging_base_dir }}/{{ ocp_cluster_name }}"
+#ocp_install_dir: "{{ staging_dir }}/ocp-install"
+
+# Libvirt vars
+#cluster_vms_storage_base_dir: "/storage/p4600-1/kvm/{{ ocp_cluster_name }}"
+#base_qcow: "{{ staging_dir }}/{{ rhcos_bin_file_name }}"
+#resized_base_qcow_disk_size: "100G"
+#resized_base_qcow: "{{ staging_dir }}/resized_{{ rhcos_bin_file_name }}"
+
+### OCS Install vars
+#ocs_install: True # replacing with {{ qubo.ocs }} Set to False if you will not be installing OCS
+#ocs_node_disk_size: replacing with {{ undercloud.qcow_size }} "450" # Size in Gi
+# Base directory for staging. This is where all the OCP binaries will be downloaded to
+#staging_base_dir: /tmp/ansible # replacing with {{ dir.tmp }} (/tmp/qubo)
+#kubeconfig_dir: "/kubeconfig" # changing to {{ dir.kubeconfig }}
+## Base domain for the cluster
+#base_domain: Replacing with {{ qubo.domain.base }} arvhomelab.com
+# OCP Vars
+#ocp_bin_version: "4.6"  # get latest stable release
+#ocp_bin_channel: "fast"
+#rhcos_bin_qcow_url: "{{ rhcos_bin_release_url }}/{{ libvirt_rhcos_bin_archive_name }}"
+#rhcos_bin_archive_name: "{{ libvirt_rhcos_bin_archive_name }}"
+#rhcos_bin_file_name: "{{ libvirt_rhcos_bin_file_name }}"
+# RHCOS SSH key <- will need this to ssh into your rhcos nodes 
+#rhcos_ssh_pub_key: ssh-rsa AAAAB3Nz...
+# If no set it to additional_trust_bundle: ""
+#additional_trust_bundle: |
+#  -----BEGIN CERTIFICATE-----
+#  -----END CERTIFICATE-----

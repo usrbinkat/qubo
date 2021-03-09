@@ -58,7 +58,10 @@ packages_RedHat8:
   - libvirt-client
   - python3-libvirt
   - libguestfs-tools
-  - libguestfs-tools
+  - python3-libsemanage
+  - nm-connection-editor
+  - NetworkManager-libnm
+  - python3-policycoreutils
   - policycoreutils-python-utils
 
 grub:
@@ -69,3 +72,4 @@ grub:
   - kvm_intel.nested=1
 
 reboot: "true"
+tenant_iface: "null"

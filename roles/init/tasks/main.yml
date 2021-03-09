@@ -5,5 +5,7 @@
   include_tasks: selinux.yml
 - name: "{{ konductor.plugin }} | Configure Libvirtd"
   include_tasks: libvirt.yml
+- name: "{{ konductor.plugin }} | Configure Network Bridge"
+  include_tasks: network.yml
 - name: "{{ konductor.plugin }} | Configure Grub Kernel Boot Arguments"
   include_tasks: grub.yml

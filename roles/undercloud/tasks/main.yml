@@ -1,0 +1,64 @@
+---
+- name: Create OpenShift manifest
+  roles:
+  roles:
+    - openshift-iginition-create
+  tags:
+    - openshift-iginition
+
+- name: Upload bootstrap ignition to webserver
+  roles:
+    - openshift-iginition-bootstrap-upload-to-webserver
+  tags:
+    - openshift-iginition
+    
+- name: Overwrite bootstrap ignition with ignition pointer
+  roles:
+    - openshift-iginition-update
+  tags:
+    - openshift-iginition
+
+- name: Setup libvirt VM image
+  roles:
+    - libvirt-setup-vm-image
+  tags:
+    - libvirt-setup-vm-image
+    - lbvirt-setup
+
+- name: Deploy libvirt Bootstrap VM
+  roles:
+    - libvirt-deploy-vms
+  tags:
+    - libvirt-deploy-vms
+
+- name: Deploy libvirt Control VMs
+  roles:
+    - libvirt-deploy-vms
+  tags:
+    - libvirt-deploy-vms
+
+- name: Deploy libvirt Worker VMs
+  roles:
+    - libvirt-deploy-vms
+  tags:
+    - libvirt-deploy-vms
+
+- name: OCP install time operations
+  environment:
+    KUBECONFIG: "{{ dir.kubeconfig }}/undercloud.config"
+  roles:
+    - openshift-install-time-operations
+  tags:
+    - openshift-install-time-operations
+
+- name: Output kubeadmin password
+  roles:
+    - openshift-show-admin-credentials
+  tags:
+    - openshift-show-admin-credentials
+   
+- name: Remove Bootstrap VM
+  roles:
+    - libvirt-remove-bootstrap
+  tags:
+    - libvirt-remove-bootstrap

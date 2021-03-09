@@ -1,0 +1,6 @@
+---
+- import_role:
+    name: sparta.collector.dependencies
+  tags:
+    - openshift-download-artifacts
+    - pre-deploy

@@ -1,0 +1,40 @@
+---
+- name: '{{ konductor.plugin }} | Purge OpenShift Manifest Staging Area'
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - '{{ dir.aux }}'
+    - '{{ dir.ignition }}'
+    - '{{ dir.manifests }}'
+
+- name: '{{ konductor.plugin }} | Create OpenShift Manifest Staging Directory'
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: '0644'
+  with_items:
+    - '{{ dir.aux }}'
+    - '{{ dir.config }}'
+    - '{{ dir.ignition }}'
+    - '{{ dir.manifests }}'
+
+- name: '{{ konductor.plugin }} | Build OpenShift install-config.yml'
+  template: 
+    src: install-config.yaml
+    dest: "{{ dir.install_config }}/undercloud-{{ item }}"
+  with_items:
+    - "{{ ocp_install_dir }}"
+    - "{{ staging_dir }}"
+
+- name: Create OCP manifests
+  shell:
+    chdir: "{{ staging_dir }}"
+    cmd: "{{ staging_dir }}/openshift-install create manifests --dir {{ ocp_install_dir }}"
+
+# Separate partition for ETCD for better performance
+- name: Process machine config for disk partitioning
+  template: 
+    src: 98-etcd-partition.yaml
+    dest: "{{ ocp_install_dir }}/manifests"
+  when: platform == "O^3"

@@ -1,0 +1,9 @@
+#!/usr/local/bin/ansible-playbook
+# Setup a clean RHEL8 Libvirt based Hypervisor
+# Example:
+#   ./hypervisor -e reboot=false -e tenant_iface=eno2np1
+- name: "Qubo | O^3 Host Install"
+  hosts: qubo
+  roles:
+    - role: init
+      tags: init
