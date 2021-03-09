@@ -6,3 +6,39 @@ This repo hosts playbooks for OpenShift UPI install automation for O^3  (OpenShi
 ## [Libvirt/KVM](./libvirt)
 
 This is a work in progress and there is lots of room for improvement. I will be updating this repo pretty often.
+
+---------------------------------
+# WIP Quick Start Guide
+
+
+### 0. Install clean RHEL8 on host with minimum 128GB RAM, 2TB NVME, 8C/16T
+### 0. Acquire root on RHEL8 Host
+### 0. Install Git & Podman
+```sh
+sudo dnf install git podman -y
+```
+### 0. Clone CloudCtl repo
+```sh
+git clone https://github.com/CloudCtl/cloudctl.git /root/cloudctl && cd /root/cloudctl
+```
+### 0. Start CloudCtl Pod
+```sh
+./init.sh -e konductor=true
+```
+### 0. Exec into Konductor container via podman exec or ssh -p 2222
+```sh
+podman exec -it konductor connect
+...
+or
+...
+ssh -p 2222 root@10.88.0.1
+```
+### 0. 
+```sh
+```
+### 0. 
+```sh
+```
+### 0. 
+```sh
+```
