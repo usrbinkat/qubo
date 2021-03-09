@@ -11,7 +11,12 @@ This is a work in progress and there is lots of room for improvement. I will be 
 # WIP Quick Start Guide
 
 
-### 0. Install clean RHEL8 on host with minimum 128GB RAM, 2TB NVME, 8C/16T
+### 0. Minimum Requirements:
+  - RAM: 128GB
+  - CPU: 8C/16T
+  - NVME: 2TB
+  - RHEL8 Clean Install
+
 ### 0. Acquire root on RHEL8 Host
 ### 0. Install Git & Podman
 ```sh
