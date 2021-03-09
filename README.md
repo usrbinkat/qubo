@@ -15,7 +15,7 @@ This is a work in progress and there is lots of room for improvement. I will be 
 ### 0. Acquire root on RHEL8 Host
 ### 0. Install Git & Podman
 ```sh
-sudo dnf install git podman -y
+dnf install git podman -y
 ```
 ### 0. Clone CloudCtl repo
 ```sh
