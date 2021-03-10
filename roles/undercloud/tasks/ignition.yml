@@ -1,19 +1,44 @@
 ---
-- name: '{{ konductor.plugin }} | Build OpenShift install-config.yml'
-  import_role: sparta.collector.dependencies
+- name: '{{ konductor.plugin }} | Purge OpenShift Manifest Staging Area'
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - '{{ dir.config }}'
+    - '{{ dir.ignition }}'
+    - '{{ dir.manifests }}'
+  delegate_to: konductor
+
+- name: '{{ konductor.plugin }} | Create OpenShift Manifest Staging Directory'
+  file:
+    state: directory
+    path: "{{ item }}"
+    mode: '0644'
+  with_items:
+    - '{{ dir.config }}'
+    - '{{ dir.ignition }}'
+  delegate_to: konductor
 
 - name: '{{ konductor.plugin }} | Build OpenShift install-config.yml'
   template: 
     src: libvirt-install-config.yaml.j2
-    dest: "{{ dir.install_config }}/undercloud-{{ item }}"
+    dest: "{{ item }}/install-config.yaml"
   with_items:
     - "{{ dir.install_config }}"
-    - "{{ dir.manifests }}"
+    - "{{ dir.ignition }}"
+  delegate_to: konductor
 
-- name: Create OCP manifests
-  shell:
-    chdir: "{{ dir.manifests }}"
-    cmd: "{{ dir.manifests }}/openshift-install create manifests --dir {{ dir.manifests }}"
+- name: '{{ konductor.plugin }} | Generate OpenShift Manifests'
+  command:
+    argv:
+      - '{{ dir.bin }}/openshift-install'
+      - create
+      - manifests
+      - --dir
+      - '{{ dir.ignition }}'
+  args:
+    chdir: "{{ dir.ignition }}"
+  delegate_to: konductor
 
 # Separate partition for ETCD for better performance
 # name: Process machine config for disk partitioning
@@ -21,3 +46,21 @@
 #   src: 98-etcd-partition.yaml
 #   dest: "{{ ocp_install_dir }}/manifests"
 # when: platform == "O^3"
+
+- name: '{{ konductor.plugin }} | copy | Backup manifests'
+  copy:
+    src: "{{ dir.ignition }}"
+    dest: "{{ dir.manifests }}"
+  delegate_to: konductor
+
+- name: '{{ konductor.plugin }} | Generate OpenShift Ignition Files'
+  command:
+    argv:
+      - '{{ dir.bin }}/openshift-install'
+      - create
+      - ignition-configs
+      - --dir
+      - '{{ dir.ignition }}'
+  args:
+    chdir: "{{ dir.ignition }}"
+  delegate_to: konductor

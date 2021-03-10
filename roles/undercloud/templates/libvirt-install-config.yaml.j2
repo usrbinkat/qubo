@@ -1,7 +1,7 @@
 apiVersion: v1
 baseDomain: {{ qubo.domain.base }}
 metadata:
-  name: {{ qubo.domain.sub }}
+  name: undercloud
 platform:
   none: {}
 compute:
@@ -22,8 +22,8 @@ networking:
   serviceNetwork:
   - 172.30.0.0/16
 sshKey: |
-{{ cloudctl.ssh.priv_key_str | indent(width=2, indentfirst=true) }}
-pullSecret: |
-{{ cloudctl.docker.pull_secret_str | indent(width=2, indentfirst=true) }}
+{{ cloudctl.ssh.pub_key_str | indent(width=2, indentfirst=true) }}
+{{ lookup('file', '/root/.ssh/id_rsa.pub') | indent(width=2, indentfirst=true) }}
+pullSecret: '{{ cloudctl.quay_secret.pull_secret_str }}'
 additionalTrustBundle: |
-{{ lookup("file", "{{ dir_secrets }}/cloudctl/certs/ssl/server/cloudctl.crt") | indent( width=2, indentfirst=True) }}
+{{ lookup("file", "{{ dir.secrets }}/cloudctl/certs/ssl/server/cloudctl.crt") | indent( width=2, indentfirst=True) }}

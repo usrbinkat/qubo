@@ -1,8 +1,8 @@
 ---
 # name: "{{ konductor.plugin }} | Create Directories"
 # include_tasks: tree.yml
-- name: "{{ konductor.plugin }} | Download Dependencies"
-  include_tasks: dependencies.yml
+# name: "{{ konductor.plugin }} | Download Dependencies"
+# include_tasks: dependencies.yml
 - name: "{{ konductor.plugin }} | Build OpenShift Manifest Files"
   include_tasks: ignition.yml
   

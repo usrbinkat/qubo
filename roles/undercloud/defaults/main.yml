@@ -10,19 +10,19 @@ qubo:
   domain:
     sub: "{{  lookup('env', 'SUB_DOMAIN')   | default('o3',       true) }}"
     base: "{{ lookup('env', 'BASE_DOMAIN')  | default('codectl.io', true) }}"
-    fqdn: "{{ qubo.domain.sub }}.{{ qubo.domain.base }}"
+#   fqdn: "{{ qubo.domain.sub }}.{{ qubo.domain.base }}"
   openshift:
     release: "{{ ocp_release | default('latest') }}"
 cloudctl:
-  docker:
-    pull_secret_file: "{{ dir.user }}/.docker/config"
-    pull_secret_str: "{{   lookup('file', '{{ cloudctl.docker.pull_secret_file }}')  }}"
+  quay_secret:
+    pull_secret_file: "{{ dir.secrets }}/docker/quay.config"
+    pull_secret_str: "{{   lookup('file', '{{ dir.secrets }}/docker/quay.config') | string }}"
   ssh:
     enable: "{{ lookup('env', 'ENABLE_SSH') | default('true', true) }}"
-    priv_key_file: "{{ dir.user }}/.ssh/id_rsa"
-    pub_key_file: "{{  dir.user }}/.ssh/id_rsa.pub"
-    priv_key_str: "{{  lookup('file', '{{ cloudctl.ssh.priv_key_file }}') }}"
-    pub_key_str: "{{   lookup('file', '{{ cloudctl.ssh.pub_key_file }}')  }}"
+    priv_key_file: "{{ dir.secrets }}/ssh/id_rsa_cloudctl"
+    pub_key_file: "{{  dir.secrets }}/ssh/id_rsa_cloudctl.pub"
+    priv_key_str: "{{  lookup('file', '{{ dir.secrets }}/ssh/id_rsa_cloudctl') }}"
+    pub_key_str: "{{   lookup('file', '{{ dir.secrets }}/ssh/id_rsa_cloudctl.pub')  }}"
   pod:
     name: "{{ lookup('env', 'POD_NAME') | default('cloudctl', true) }}"
     force_replace: true
